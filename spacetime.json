@@ -1,0 +1,10 @@
+{
+  "name": "tictactoe",
+  "servers": [
+    {
+      "name": "default",
+      "path": "spacetimedb"
+    }
+  ],
+  "database": "languid-cord-9829"
+}

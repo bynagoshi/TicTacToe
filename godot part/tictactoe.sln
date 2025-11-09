@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tictactoe", "tictactoe.csproj", "{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{399EA2B5-D1CA-4994-A467-8DABF6D9B6CC}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal
