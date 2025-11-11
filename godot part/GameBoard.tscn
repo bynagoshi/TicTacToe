@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://lxai0cwi2ygc"]
+
+[ext_resource type="Script" uid="uid://c7l0nvri6npjp" path="res://GameBoard.cs" id="1_13qgv"]
+
+[node name="GameBoard" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_13qgv")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+columns = 3
+
+[node name="Cell1" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell2" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell3" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell4" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell5" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell6" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell7" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell8" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Cell9" type="Button" parent="GridContainer"]
+layout_mode = 2
+
+[node name="CreateGame" type="Button" parent="."]
+layout_mode = 0
+offset_top = 35.0
+offset_right = 8.0
+offset_bottom = 43.0
+
+[node name="JoinGame" type="Button" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 35.0
+offset_right = 32.0
+offset_bottom = 43.0
+
+[node name="ResetGame" type="Button" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 35.0
+offset_right = 20.0
+offset_bottom = 43.0

@@ -1,22 +1,25 @@
 using Godot;
 using System.Threading.Tasks;
 using SpacetimeDB;
-using SpacetimeDB.Types;      
+using SpacetimeDB.Types;     
 
 
 public partial class SpacetimeManager : Node
 {
-	private DbConnection _conn;
+	public static SpacetimeManager I {get; private set;}
+	public DbConnection Client {get; private set;}
+
 
 	public override void _Ready()
 	{
+		I = this;
 		GD.Print(">>> SpacetimeManager READY");
 		ConnectToDb();
 	}
 	
 	public override void _Process(double delta)
 	{
-		_conn?.FrameTick();
+		Client?.FrameTick();
 	}
 
 	private void ConnectToDb()
@@ -25,7 +28,7 @@ public partial class SpacetimeManager : Node
 		const string DB_NAME = "languid-cord-9829"; 
 		GD.Print("🚀 Connection initiated...");
 
-		_conn = DbConnection
+		Client = DbConnection
 			.Builder()
 			.WithUri(HOST)
 			.WithModuleName(DB_NAME)  
@@ -41,6 +44,11 @@ public partial class SpacetimeManager : Node
 			{
 				GD.Print("Disconnected");
 			})
-			.Build();               
+			.Build();    
+		Client.SubscriptionBuilder()
+			.OnApplied(ctx => GD.Print("Subscription applied!"))
+			.OnError((ctx, ex) => GD.PrintErr($"Subscription error: {ex.Message}"))
+			.Subscribe(new string[] { "SELECT * FROM Game" });
+					   
 	}
 }
