@@ -1,50 +1,130 @@
 using Godot;
 using System.Threading.Tasks;
 using SpacetimeDB;
+using System;
 
 public partial class GameBoard : Control
 {
-	private ulong gameId = 1; // static test ID for now
-
+	//private ulong gameId = 1; 
+	private Button[] cells = new Button[9];
 	public override void _Ready()
 	{
-		// Hook up the cell buttons
-		for (int i = 0; i < 9; i++)
+		GD.Print("GameBoard Ready");
+		
+		for (int i = 1; i < 10; i++)
 		{
 			var button = GetNode<Button>($"GridContainer/Cell{i}");
 			int index = i;
-			button.Pressed += () => OnCellPressed(index);
+			button.Text = "-";
+			//button.Pressed += () => 
+			//{
+				//GD.Print($"Cell {index} clicked");
+				//OnCellPressed(index);
+				////OnCreateGame();
+			//};
+			button.Connect(Button.SignalName.Pressed,
+				Callable.From(() =>
+				{
+					GD.Print($"Cell {index} clicked");
+					OnCellPressed(index);
+				}));
+			
+		}
+		void Wire(string name, Action a)
+		{
+			var b = GetNodeOrNull<Button>(name);
+			if (b == null) { GD.PrintErr($"Missing: {name}"); return; }
+			b.Connect(Button.SignalName.Pressed, Callable.From(() =>
+			{
+				GD.Print($"{name} clicked");
+				a();
+			}));
 		}
 
-		// Hook up action buttons
-		GetNode<Button>("CreateGame").Pressed += () => OnCreateGame();
-		GetNode<Button>("JoinGame").Pressed += () => OnJoinGame();
-		GetNode<Button>("ResetGame").Pressed += () => OnResetGame();
+		GetNode<Button>("ControlContainer/CreateGame").Connect(
+			Button.SignalName.Pressed,
+			Callable.From((Action) =>
+			{
+				GD.Print("Create clicked");
+				OnCreateGame();
+			})
+		);
 
-		GD.Print("Game board ready");
+		GetNode<Button>("ControlContainer/JoinGame").Connect(
+			Button.SignalName.Pressed,
+			Callable.From((Action)(() =>
+			{
+				GD.Print("Join clicked");
+				OnJoinGame();
+			}))
+		);
+
+		GetNode<Button>("ControlContainer/ResetGame").Connect(
+			Button.SignalName.Pressed,
+			Callable.From((Action)(() =>
+			{
+				GD.Print("Reset clicked");
+				OnResetGame();
+			}))
+		);
+
+
+		GD.Print("Buttons wired via Connect()");
+		
+		//GetNode<Button>("ControlContainer/CreateGame").Pressed += () => { GD.Print("Create clicked"); OnCreateGame(); };
+		//GetNode<Button>("ControlContainer/JoinGame").Pressed += () => { GD.Print("Join clicked"); OnJoinGame(); };
+		//GetNode<Button>("ControlContainer/ResetGame").Pressed += () => { GD.Print("Reset clicked"); OnResetGame(); };
+//
+		//SpacetimeManager.I.OnBoardChanged += Render;
+
 	}
 
 	private void OnCreateGame()
 	{
 		SpacetimeManager.I.Client.Reducers.CreateGame();
 		GD.Print("Game created!");
+		if (SpacetimeManager.I.CurrentGameId != 0)
+		{
+			SpacetimeManager.I.Client.Reducers.JoinGame(SpacetimeManager.I.CurrentGameId);
+			GD.Print($"Joined new game {SpacetimeManager.I.CurrentGameId}");
+		}
 	}
 
 	private void OnJoinGame()
 	{
-		SpacetimeManager.I.Client.Reducers.JoinGame(gameId);
-		GD.Print("Joined game!");
+		var id = SpacetimeManager.I.CurrentGameId;
+		if (id != 0)
+		{
+			SpacetimeManager.I.Client.Reducers.JoinGame(id);
+			GD.Print("Joined game!");
+		}
+		else
+		{
+			GD.PrintErr("No game to join yet. Click Create Game first.");
+		}
 	}
 
 	private void OnResetGame()
 	{
-		SpacetimeManager.I.Client.Reducers.ResetGame(gameId);
+		var id = SpacetimeManager.I.CurrentGameId;
+		SpacetimeManager.I.Client.Reducers.ResetGame(id);
 		GD.Print("Game reset!");
 	}
 
 	private void OnCellPressed(int pos)
 	{
-		SpacetimeManager.I.Client.Reducers.MakeMove(gameId, (byte)pos);
-		GD.Print($"Pressed cell {pos}");
+		var id = SpacetimeManager.I.CurrentGameId;
+		if (id != 0)
+		{
+			SpacetimeManager.I.Client.Reducers.MakeMove(id, (byte)pos);
+			GD.Print($"Pressed cell {pos}");
+		}
+	}
+
+	public void Render(string board)
+	{
+		if (string.IsNullOrEmpty(board) || board.Length < 10) return;
+		for (int i = 1; i < 10; i++)
+			cells[i].Text = board[i].ToString();
 	}
 }

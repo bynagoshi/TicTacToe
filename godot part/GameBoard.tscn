@@ -4,60 +4,97 @@
 
 [node name="GameBoard" type="Control"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_13qgv")
 
 [node name="GridContainer" type="GridContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
 columns = 3
 
 [node name="Cell1" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell2" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell3" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell4" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell5" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell6" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell7" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell8" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+theme_override_font_sizes/font_size = 48
 
 [node name="Cell9" type="Button" parent="GridContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+
+[node name="ControlContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -184.0
+offset_top = 202.0
+offset_right = 184.0
+offset_bottom = 241.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CreateGame" type="Button" parent="ControlContainer"]
+custom_minimum_size = Vector2(120, 30)
 layout_mode = 2
 
-[node name="CreateGame" type="Button" parent="."]
-layout_mode = 0
-offset_top = 35.0
-offset_right = 8.0
-offset_bottom = 43.0
+[node name="JoinGame" type="Button" parent="ControlContainer"]
+custom_minimum_size = Vector2(120, 30)
+layout_mode = 2
 
-[node name="JoinGame" type="Button" parent="."]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 35.0
-offset_right = 32.0
-offset_bottom = 43.0
-
-[node name="ResetGame" type="Button" parent="."]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 35.0
-offset_right = 20.0
-offset_bottom = 43.0
+[node name="ResetGame" type="Button" parent="ControlContainer"]
+custom_minimum_size = Vector2(120, 30)
+layout_mode = 2
