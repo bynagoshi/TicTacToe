@@ -3,7 +3,7 @@ using System.Linq;
 
 public static partial class Module
 {
-    [SpacetimeDB.Table]
+    [SpacetimeDB.Table(Public = true)]
     public partial struct Game
     {
         [SpacetimeDB.AutoInc]
