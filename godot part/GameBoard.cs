@@ -3,25 +3,23 @@ using System.Threading.Tasks;
 using SpacetimeDB;
 using System;
 
-public partial class GameBoard : Control
-{
+	public partial class GameBoard : Control
+	{
 	//private ulong gameId = 1; 
 	private Button[] cells = new Button[9];
 	public override void _Ready()
 	{
 		GD.Print("GameBoard Ready");
-		
-		for (int i = 1; i < 10; i++)
+		GetNode<Button>("ControlContainer/CreateGame").Text = "Create Game";
+		GetNode<Button>("ControlContainer/JoinGame").Text = "Join Game";
+		GetNode<Button>("ControlContainer/ResetGame").Text = "Reset Game";
+		for (int i = 0; i < 9; i++)
 		{
-			var button = GetNode<Button>($"GridContainer/Cell{i}");
+			var button = GetNode<Button>($"GridContainer/Cell{i + 1}");
+			cells[i] = button;
 			int index = i;
 			button.Text = "-";
-			//button.Pressed += () => 
-			//{
-				//GD.Print($"Cell {index} clicked");
-				//OnCellPressed(index);
-				////OnCreateGame();
-			//};
+
 			button.Connect(Button.SignalName.Pressed,
 				Callable.From(() =>
 				{
@@ -30,16 +28,6 @@ public partial class GameBoard : Control
 				}));
 			
 		}
-		//void Wire(string name, Action a)
-		//{
-			//var b = GetNodeOrNull<Button>(name);
-			//if (b == null) { GD.PrintErr($"Missing: {name}"); return; }
-			//b.Connect(Button.SignalName.Pressed, Callable.From(() =>
-			//{
-				//GD.Print($"{name} clicked");
-				//a();
-			//}));
-		//}
 
 		GetNode<Button>("ControlContainer/CreateGame").Connect(
 			Button.SignalName.Pressed,
@@ -71,11 +59,11 @@ public partial class GameBoard : Control
 
 		GD.Print("Buttons wired via Connect()");
 		
-		//GetNode<Button>("ControlContainer/CreateGame").Pressed += () => { GD.Print("Create clicked"); OnCreateGame(); };
-		//GetNode<Button>("ControlContainer/JoinGame").Pressed += () => { GD.Print("Join clicked"); OnJoinGame(); };
-		//GetNode<Button>("ControlContainer/ResetGame").Pressed += () => { GD.Print("Reset clicked"); OnResetGame(); };
-//
-		//SpacetimeManager.I.OnBoardChanged += Render;
+		// Subscribe to board changes
+		if (SpacetimeManager.I != null)
+		{
+			SpacetimeManager.I.OnBoardChanged += Render;
+		}
 
 	}
 
@@ -97,27 +85,11 @@ public partial class GameBoard : Control
 		
 		SpacetimeManager.I.Client.Reducers.CreateGame();
 		GD.Print("New game created");
-		//if (SpacetimeManager.I.CurrentGameId != 0)
-		//{
-			//SpacetimeManager.I.Client.Reducers.JoinGame(SpacetimeManager.I.CurrentGameId);
-			//GD.Print($"Joined new game {SpacetimeManager.I.CurrentGameId}");
-		//}
+
 	}
 
 	private void OnJoinGame()
 	{
-		//var id = SpacetimeManager.I.CurrentGameId;
-		//if (id == 0) id = SpacetimeManager.I.GetLatestGameIdFromCache();
-		//
-		//if (id != 0)
-		//{
-			//SpacetimeManager.I.Client.Reducers.JoinGame(id);
-			//GD.Print($"Joined game {id}");
-		//}
-		//else
-		//{
-			//GD.PrintErr("No game to join yet. Click Create Game first.");
-		//}
 		
 		SpacetimeManager.I.UseLatestGameId();
 		var id = SpacetimeManager.I.CurrentGameId;
@@ -146,15 +118,21 @@ public partial class GameBoard : Control
 		
 		if (id != 0)
 		{
-			SpacetimeManager.I.Client.Reducers.MakeMove(id, (byte)pos);
+			SpacetimeManager.I.Client.Reducers.MakeMove(id, pos);
 			GD.Print($"Pressed cell {pos}");
 		}
 	}
 
 	public void Render(string board)
 	{
-		if (string.IsNullOrEmpty(board) || board.Length < 10) return;
-		for (int i = 1; i < 10; i++)
-			cells[i].Text = board[i].ToString();
+		if (string.IsNullOrEmpty(board) || board.Length < 9) return;
+		GD.Print($"Rendering board: {board}");
+		for (int i = 0; i < 9; i++)
+		{
+			if (cells[i] != null)
+			{
+				cells[i].Text = board[i].ToString();
+			}
+		}
 	}
 }

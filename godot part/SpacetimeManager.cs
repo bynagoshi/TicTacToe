@@ -38,7 +38,6 @@ public partial class SpacetimeManager : Node
 			.WithModuleName(DB_NAME)
 			.OnConnect((conn, identity, token) =>
 			{
-
 				conn.SubscriptionBuilder()
 					.OnApplied(ctx => { GD.Print("Subscription applied"); IsSubscribed = true; })
 					.OnError((ctx, ex) => GD.PrintErr($"Subscription error: {ex}"))
