@@ -65,6 +65,7 @@ public static partial class Module
         }
         g.Player2 = ctx.Sender;
         g.Status = "in progress";
+        g.CurrentPlayer = g.Player2;
         ctx.Db.Game.Id.Update(g);
         Log.Info($"Player2 joined game {gameId}");
     }
@@ -72,11 +73,13 @@ public static partial class Module
     [SpacetimeDB.Reducer]
     public static void MakeMove(ReducerContext ctx, ulong gameId, int position)
     {
+        position = position - 1;
         Game? found = null;
         foreach (var game in ctx.Db.Game.Iter())
         {
             if (game.Id == gameId)
             {
+                
                 found = game;
                 break;
             }
@@ -89,11 +92,11 @@ public static partial class Module
 
         var g = found.Value;
 
-        if (g.CurrentPlayer != ctx.Sender)
-        {
-            Log.Error($"It's not {ctx.Sender}'s turn");
-            return;
-        }
+        // if (g.CurrentPlayer != ctx.Sender)
+        // {
+        //     Log.Error($"It's not {ctx.Sender}'s turn");
+        //     return;
+        // }
         if (g.Board[position] != '-')
         {
             Log.Error($"Position {position} is already taken");
