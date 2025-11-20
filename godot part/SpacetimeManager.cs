@@ -9,6 +9,7 @@ public partial class SpacetimeManager : Node
 	public static SpacetimeManager I { get; private set; }
 	public DbConnection Client { get; private set; }
 	public event Action<string> OnBoardChanged;
+	public event Action<string> OnStatusChanged;
 	public ulong CurrentGameId { get; set; } = 0;
 	public bool IsSubscribed { get; private set; } = false;
 
@@ -62,20 +63,27 @@ public partial class SpacetimeManager : Node
 
 		Client.Db.Game.OnInsert += (EventContext ctx, Game row) =>
 		{
-			GD.Print($"[Game inserted] id={row.Id} board={row.Board}");
+			GD.Print($"[Game inserted] id={row.Id} board={row.Board} status={row.Status}");
 			CurrentGameId = row.Id;
 			OnBoardChanged?.Invoke(row.Board);
+			OnStatusChanged?.Invoke(row.Status);
 		};
 
 		Client.Db.Game.OnUpdate += (EventContext ctx, Game oldRow, Game newRow) =>
 		{
-			GD.Print($"[Game updated] id={newRow.Id} board={newRow.Board} (was {oldRow.Board})");
+			GD.Print($"[Game updated] id={newRow.Id} board={newRow.Board} status={newRow.Status} (was {oldRow.Board} {oldRow.Status})");
 
 			if (CurrentGameId == 0)
 				CurrentGameId = newRow.Id;
 
 			if (newRow.Id == CurrentGameId)
+			{
 				OnBoardChanged?.Invoke(newRow.Board);
+				if (oldRow.Status != newRow.Status)
+				{
+					OnStatusChanged?.Invoke(newRow.Status);
+				}
+			}
 		};
 
 		
@@ -129,5 +137,20 @@ public partial class SpacetimeManager : Node
 		{
 			GD.PrintErr("JoinLatest: no game id to join");
 		}
+	}
+
+	public string GetCurrentGameStatus()
+	{
+		if (Client == null || CurrentGameId == 0)
+			return "";
+
+		foreach (var g in Client.Db.Game.Iter())
+		{
+			if (g.Id == CurrentGameId)
+			{
+				return g.Status;
+			}
+		}
+		return "";
 	}
 }

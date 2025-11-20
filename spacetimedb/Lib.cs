@@ -73,7 +73,6 @@ public static partial class Module
     [SpacetimeDB.Reducer]
     public static void MakeMove(ReducerContext ctx, ulong gameId, int position)
     {
-        position = position - 1;
         Game? found = null;
         foreach (var game in ctx.Db.Game.Iter())
         {
@@ -91,6 +90,13 @@ public static partial class Module
         }
 
         var g = found.Value;
+
+        // Check if game is already over
+        if (g.Status == "X won" || g.Status == "O won" || g.Status == "draw")
+        {
+            Log.Error($"Game is already over. Status: {g.Status}");
+            return;
+        }
 
         // if (g.CurrentPlayer != ctx.Sender)
         // {

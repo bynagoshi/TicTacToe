@@ -7,6 +7,7 @@ using System;
 	{
 	//private ulong gameId = 1; 
 	private Button[] cells = new Button[9];
+	private string currentStatus = "";
 	public override void _Ready()
 	{
 		GD.Print("GameBoard Ready");
@@ -63,6 +64,7 @@ using System;
 		if (SpacetimeManager.I != null)
 		{
 			SpacetimeManager.I.OnBoardChanged += Render;
+			SpacetimeManager.I.OnStatusChanged += OnStatusChanged;
 		}
 
 	}
@@ -113,6 +115,13 @@ using System;
 
 	private void OnCellPressed(int pos)
 	{
+		// Check if game is still in progress
+		if (currentStatus == "X won" || currentStatus == "O won" || currentStatus == "draw")
+		{
+			GD.Print($"Game is over (status: {currentStatus}), cannot make move");
+			return;
+		}
+
 		var id = SpacetimeManager.I.CurrentGameId;
 		if (id == 0) id = SpacetimeManager.I.GetLatestGameIdFromCache();
 		
@@ -123,10 +132,37 @@ using System;
 		}
 	}
 
+	private void OnStatusChanged(string status)
+	{
+		currentStatus = status;
+		GD.Print($"Game status changed to: {status}");
+		UpdateCellButtonsEnabled();
+	}
+
+	private void UpdateCellButtonsEnabled()
+	{
+		bool enabled = currentStatus == "in progress";
+		for (int i = 0; i < cells.Length; i++)
+		{
+			if (cells[i] != null)
+			{
+				cells[i].Disabled = !enabled;
+			}
+		}
+	}
+
 	public void Render(string board)
 	{
 		if (string.IsNullOrEmpty(board) || board.Length < 9) return;
 		GD.Print($"Rendering board: {board}");
+		
+		// Update status from cache if available
+		if (SpacetimeManager.I != null)
+		{
+			currentStatus = SpacetimeManager.I.GetCurrentGameStatus();
+			UpdateCellButtonsEnabled();
+		}
+		
 		for (int i = 0; i < 9; i++)
 		{
 			if (cells[i] != null)
